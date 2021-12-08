@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Message.Core.Services.Message;
+using Message.Core.Services.Chat;
 using Message.Core.Services.User;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -29,7 +29,11 @@ namespace Message.API
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllers();
-            services.AddHttpClient<IMessageInterface, MessageService>(_ =>
+            
+            services.AddScoped<IChatService, ChatService>();
+            services.AddScoped<IUserService, UserService>();
+            
+            services.AddHttpClient<IChatService, ChatService>(_ =>
             {
                 _.BaseAddress = new Uri("https://localhost:5001/");
                 //parameters

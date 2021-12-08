@@ -6,6 +6,6 @@ namespace Message.Database.Models.User
     {
         public int Count { get; set; }
         public IEnumerable<MemberInfo> Members { get; set; }
-        public IEnumerable<UserEntity> Users { get; set; }
+        //public IEnumerable<UserEntity> Users { get; set; }
     }
 }

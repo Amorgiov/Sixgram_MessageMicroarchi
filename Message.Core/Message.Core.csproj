@@ -5,11 +5,11 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <Folder Include="Context" />
+      <ProjectReference Include="..\Message.Database\Message.Database.csproj" />
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\Message.Database\Message.Database.csproj" />
+      <PackageReference Include="Microsoft.EntityFrameworkCore" Version="5.0.12" />
     </ItemGroup>
 
 </Project>

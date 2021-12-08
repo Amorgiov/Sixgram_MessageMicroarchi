@@ -1,21 +1,28 @@
-﻿using System.Net.Http;
+﻿using System.Collections.Generic;
+using System.Net.Http;
+using Message.Database.Models.User;
 
 namespace Message.Core.Services.User
 {
-    public class UserService : IUserInterface
+    public class UserService : IUserService
     {
         private HttpClient _client;
         public UserService(HttpClient client)
         {
             _client = client;
         }
-        
-        public void Connect()
+
+        public int AddChatUser(int chatId, int userId)
         {
             throw new System.NotImplementedException();
         }
 
-        public void Disconnect()
+        public int RemoveChatUser(int chatId, int userId)
+        {
+            throw new System.NotImplementedException();
+        }
+
+        public IEnumerable<ChatUsers> GetChatMembers(int chatId)
         {
             throw new System.NotImplementedException();
         }

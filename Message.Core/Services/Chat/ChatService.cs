@@ -3,17 +3,15 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using Message.Core.Dto;
 using Message.Database.Models;
-using Message.Database.Models.User;
 
-namespace Message.Core.Services.Message
+namespace Message.Core.Services.Chat
 {
-    public class MessageService : IMessageInterface
+    public class ChatService : IChatService
     {
-        private HttpClient _client;
-        
-        public MessageService(HttpClient client)
+        private readonly HttpClient _client;
+        public ChatService(HttpClient httpClient)
         {
-            _client = client;
+            _client = httpClient;
         }
         
         public void CreateChat(List<int> userIds, string title)
@@ -22,16 +20,6 @@ namespace Message.Core.Services.Message
         }
 
         public void DeleteChat(int userId)
-        {
-            throw new System.NotImplementedException();
-        }
-
-        public int DeleteMessage(List<int> messageIds, int deleteForAll)
-        {
-            throw new System.NotImplementedException();
-        }
-
-        public IEnumerable<MessageEntity> GetMessageById(List<int> messageIds, int previewLength = 0)
         {
             throw new System.NotImplementedException();
         }
@@ -45,13 +33,23 @@ namespace Message.Core.Services.Message
         {
             throw new System.NotImplementedException();
         }
-
-        public IEnumerable<ChatUsers> GetChatMembers(int chatId)
+        
+        public Task<int> DeleteMessage(List<int> messageIds, int deleteForAll)
         {
             throw new System.NotImplementedException();
         }
 
-        public int Send(MessageDto messageDto)
+        public IEnumerable<MessageEntity> GetMessageById(List<int> messageIds, int previewLength = 0)
+        {
+            throw new System.NotImplementedException();
+        }
+
+        public async Task SendMsg(MessageDto messageDto)
+        {
+            throw new System.NotImplementedException();
+        }
+
+        public async Task GetMsg(MessageDto messageDto)
         {
             throw new System.NotImplementedException();
         }
