@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using Message.Database.Models.User;
 
 namespace Message.Core.Services.User
 {
@@ -9,7 +8,6 @@ namespace Message.Core.Services.User
         int AddChatUser(int chatId, int userId);
         int RemoveChatUser(int chatId, int userId);
         
-        /// <returns>array of objects describing users and info user rights</returns>
-        IEnumerable<ChatUsers> GetChatMembers(int chatId);
+        //IEnumerable<ChatUsers> GetChatMembers(int chatId);
     }
 }

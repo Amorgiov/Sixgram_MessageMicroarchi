@@ -1,7 +1,16 @@
-﻿namespace Message.Database.Repository.Base
+﻿using System;
+using System.Threading.Tasks;
+using Message.Common.Base;
+
+namespace Message.Database.Repository.Base
 {
-    public interface IBaseRepository
+    public interface IBaseRepository<TModel>
+        where TModel : BaseModel
     {
-        
+        Task<TModel> Create(TModel data);
+        Task<TModel> GetById(int id);
+        TModel GetOne(Func<TModel, bool> predicate);
+        Task<TModel> Update(TModel item);
+        Task<TModel> Delete(int id);
     }
 }

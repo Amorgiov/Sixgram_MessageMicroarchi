@@ -1,57 +1,78 @@
 ﻿using System.Collections.Generic;
 using System.Net.Http;
+using System.Net.Http.Json;
 using System.Threading.Tasks;
+using AutoMapper;
+using Message.Common.Enums;
+using Message.Common.Result;
 using Message.Core.Dto;
+using Message.Core.Dto.Chat;
 using Message.Database.Models;
+using Message.Database.Repository.Chat;
 
 namespace Message.Core.Services.Chat
 {
     public class ChatService : IChatService
     {
-        private readonly HttpClient _client;
-        public ChatService(HttpClient httpClient)
+        private readonly IMapper _mapper;
+        private readonly IChatRepository _chatRepository;
+        public ChatService(IMapper mapper, IChatRepository chatRepository)
         {
-            _client = httpClient;
-        }
-        
-        public void CreateChat(List<int> userIds, string title)
-        {
-            throw new System.NotImplementedException();
+            _mapper = mapper;
+            _chatRepository = chatRepository;
         }
 
-        public void DeleteChat(int userId)
+        public async Task<ResultContainer<ChatDto>> CreateChat(ChatEntity model)
         {
-            throw new System.NotImplementedException();
+            var result = _mapper.Map<ResultContainer<ChatDto>>(await _chatRepository.Create(model));
+            return result;
         }
 
-        public IEnumerable<ChatEntity> GetConversations(int userId)
+        public async Task<ResultContainer<ChatDto>> DeleteChat(int id)
         {
-            throw new System.NotImplementedException();
+            var result = new ResultContainer<ChatDto>();
+            var chat = await _chatRepository.Delete(id);
+            if (chat == null)
+            {
+                result.ErrorType = ErrorType.NotFound;
+                return result;
+            }
+
+            result = _mapper.Map<ResultContainer<ChatDto>>(chat);
+            return result;
         }
 
-        public IEnumerable<ChatEntity> GetConversationsById(int? chatId, List<int> chatIds)
+        public async Task<ResultContainer<ChatDto>> EditChat(ChatDto data)
         {
-            throw new System.NotImplementedException();
-        }
-        
-        public Task<int> DeleteMessage(List<int> messageIds, int deleteForAll)
-        {
-            throw new System.NotImplementedException();
+            var result = new ResultContainer<ChatDto>();
+            var chat = _chatRepository.GetOne(_ => _.Title == data.Title &&
+                                                   _.Members == data.Members &&
+                                                   _.Admin == data.Admin);//bad case
+            if (chat == null)
+            {
+                result.ErrorType = ErrorType.NotFound;
+                return result;
+            }
+
+            chat.Title = data.Title;
+            chat.Members = data.Members;
+            chat.Admin = data.Admin;
+
+            result = _mapper.Map<ResultContainer<ChatDto>>(await _chatRepository.Update(chat));
+            return result;
         }
 
-        public IEnumerable<MessageEntity> GetMessageById(List<int> messageIds, int previewLength = 0)
+        public async Task<ResultContainer<ChatDto>> GetChatById(int id)
         {
-            throw new System.NotImplementedException();
-        }
+            var result = new ResultContainer<ChatDto>();
+            var chat = await _chatRepository.GetById(id);
+            if (chat == null)
+            {
+                result.ErrorType = ErrorType.NotFound;
+            }
 
-        public async Task SendMsg(MessageDto messageDto)
-        {
-            throw new System.NotImplementedException();
-        }
-
-        public async Task GetMsg(MessageDto messageDto)
-        {
-            throw new System.NotImplementedException();
+            result = _mapper.Map<ResultContainer<ChatDto>>(chat);
+            return result;
         }
     }
 }

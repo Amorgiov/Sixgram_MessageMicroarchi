@@ -1,13 +1,12 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations.Schema;
+using Message.Common.Base;
 
 namespace Message.Database.Models
 {
-    public class MessageEntity
+    public class MessageEntity : BaseModel
     {
-        public int Id { get; set; }
         public int SenderId { get; set; }
         public int ChatId { get; set; }
-        public DateTime Timestamp { get; set; }
     }
 }

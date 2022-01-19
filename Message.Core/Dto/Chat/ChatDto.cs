@@ -1,12 +1,12 @@
 ﻿using System.Collections.Generic;
+using System.Threading;
 using Message.Common.Base;
 
-namespace Message.Database.Models
+namespace Message.Core.Dto.Chat
 {
-    public class ChatEntity : BaseModel
+    public class ChatDto : BaseModel
     {
         public string Title { get; set; }
-        public List<int> Messages { get; set; }
         public List<int> Members { get; set; }
         public int Admin { get; set; }
     }
