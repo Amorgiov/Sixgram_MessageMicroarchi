@@ -1,16 +1,12 @@
 ﻿using System.Collections.Generic;
+using Message.Common.Base;
 
 namespace Message.Core.Dto
 {
-    public class MessageDto
+    public class MessageDto : BaseModel
     {
-        public int UserId { get; set; }
+        public string Text { get; set; }
+        public int SenderId { get; set; }
         public int ChatId { get; set; }
-        public string Message { get; set; }
-        
-        /*public string attachment { get; set; } media object*/
-        
-        public int ReplyTo { get; set; }
-        public List<int> ForwardMessages { get; set; } //ReplyTo
     }
 }

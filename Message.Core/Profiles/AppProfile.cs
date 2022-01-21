@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Message.Core.Dto;
 using Message.Core.Dto.Chat;
 using Message.Database.Models;
 
@@ -10,6 +11,13 @@ namespace Message.Core.Profiles
         {
             CreateMap<ChatEntity, ChatDto>();
             CreateMap<ChatDto, ChatEntity>();
+            
+            //Params not set (\_/)
+            //               (•.•)
+            //               ♥< \
+            
+            CreateMap<MessageEntity, MessageDto>();
+            CreateMap<MessageDto, MessageEntity>();
         }
     }
 }

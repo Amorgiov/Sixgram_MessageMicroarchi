@@ -41,18 +41,18 @@ namespace Message.API.Controllers
         /// </summary>
         /// <param name="chatId"></param>
         /// <returns>Deleted model</returns>
-        [Route("{chatId:int}")]
-        [HttpPost]
+        [HttpPost("delete/{chatId:int}")]
         public async Task<ActionResult<ChatDto>> DeleteChat(int chatId)
             => await ReturnResult<ResultContainer<ChatDto>, ChatDto>(_chatService.DeleteChat(chatId));
-        
+
         /// <summary>
         /// Editing selected chat
         /// </summary>
         /// <param name="model"></param>
+        /// <param name="chatId"></param>
         /// <returns>Edited model</returns>
-        [HttpPost]
-        public async Task<ActionResult<ChatDto>> EditChat(ChatDto model)
+        [HttpPost("editing/{chatId:int}")]
+        public async Task<ActionResult<ChatDto>> EditChat(ChatDto model, int chatId)
             => await ReturnResult<ResultContainer<ChatDto>, ChatDto>(_chatService.EditChat(model));
         
         /// <summary>

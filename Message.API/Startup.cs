@@ -6,9 +6,11 @@ using AutoMapper;
 using Message.Core.Profiles;
 using Message.Core.Services.Chat;
 using Message.Core.Services.Hubs;
+using Message.Core.Services.Message;
 using Message.Core.Services.User;
 using Message.Database.Context;
 using Message.Database.Repository.Chat;
+using Message.Database.Repository.Message;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -34,16 +36,18 @@ namespace Message.API
         
         public void ConfigureServices(IServiceCollection services)
         {
-            // Configure Repositories & Services
-            services.AddScoped<IChatService, ChatService>();
-            services.AddScoped<IUserService, UserService>();
-            services.AddScoped<IChatRepository, ChatRepository>();
-            
             //Configure DbContext
             var connection = Configuration.GetConnectionString("Default");
             services.AddDbContext<ApplicationContext>(_ => _.UseNpgsql(connection,  
                 x => x.MigrationsAssembly("Message.Database")));
             
+            // Configure Repositories & Services
+            services.AddScoped<IMessageService, MessageService>();
+            services.AddScoped<IChatService, ChatService>();
+            services.AddScoped<IUserService, UserService>();
+            services.AddScoped<IChatRepository, ChatRepository>();
+            services.AddScoped<IMessageRepository, MessageRepository>();
+
             ConfigureSwagger(services);
             ConfigureAuthentication(services);
 
