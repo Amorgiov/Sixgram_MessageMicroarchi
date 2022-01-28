@@ -42,12 +42,11 @@ namespace Message.Core.Services.Chat
             return result;
         }
 
+        //Ne rabotaet
         public async Task<ResultContainer<ChatDto>> EditChat(ChatDto data)
         {
             var result = new ResultContainer<ChatDto>();
-            var chat = _chatRepository.GetOne(_ => _.Title == data.Title &&
-                                                   _.Members == data.Members &&
-                                                   _.Admin == data.Admin);//bad case
+            var chat = _chatRepository.GetOne(_ => _.Id == data.Id);
             if (chat == null)
             {
                 result.ErrorType = ErrorType.NotFound;

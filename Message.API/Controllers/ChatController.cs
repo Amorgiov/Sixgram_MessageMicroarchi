@@ -32,16 +32,16 @@ namespace Message.API.Controllers
         /// </summary>
         /// <param name="model"></param>
         /// <returns>New ChatEntity model</returns>
-        [HttpPost("create")]
+        [HttpPost("[action]")]
         public async Task<ActionResult<ChatDto>> CreateChat(ChatEntity model)
             => await ReturnResult<ResultContainer<ChatDto>, ChatDto>(_chatService.CreateChat(model));
-
+        
         /// <summary>
         /// Deleting the chat room
         /// </summary>
         /// <param name="chatId"></param>
         /// <returns>Deleted model</returns>
-        [HttpPost("delete/{chatId:int}")]
+        [HttpPost("[action]/{chatId:int}")]
         public async Task<ActionResult<ChatDto>> DeleteChat(int chatId)
             => await ReturnResult<ResultContainer<ChatDto>, ChatDto>(_chatService.DeleteChat(chatId));
 
@@ -51,8 +51,8 @@ namespace Message.API.Controllers
         /// <param name="model"></param>
         /// <param name="chatId"></param>
         /// <returns>Edited model</returns>
-        [HttpPost("editing/{chatId:int}")]
-        public async Task<ActionResult<ChatDto>> EditChat(ChatDto model, int chatId)
+        [HttpPut("editing")]
+        public async Task<ActionResult<ChatDto>> EditChat(ChatDto model)
             => await ReturnResult<ResultContainer<ChatDto>, ChatDto>(_chatService.EditChat(model));
         
         /// <summary>
@@ -60,7 +60,7 @@ namespace Message.API.Controllers
         /// </summary>
         /// <param name="id"></param>
         /// <returns>ChatEntity model</returns>
-        [HttpGet]
+        [HttpGet("{id:int}")]
         public async Task<ActionResult<ChatDto>> GetChatById(int id)
             => await ReturnResult<ResultContainer<ChatDto>, ChatDto>(_chatService.GetChatById(id));
     }

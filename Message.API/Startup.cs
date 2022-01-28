@@ -7,6 +7,7 @@ using Message.Core.Profiles;
 using Message.Core.Services.Chat;
 using Message.Core.Services.Hubs;
 using Message.Core.Services.Message;
+using Message.Core.Services.Token;
 using Message.Core.Services.User;
 using Message.Database.Context;
 using Message.Database.Repository.Chat;
@@ -16,6 +17,7 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Versioning;
+using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -36,29 +38,37 @@ namespace Message.API
         
         public void ConfigureServices(IServiceCollection services)
         {
-            //Configure DbContext
-            var connection = Configuration.GetConnectionString("Default");
-            services.AddDbContext<ApplicationContext>(_ => _.UseNpgsql(connection,  
-                x => x.MigrationsAssembly("Message.Database")));
-            
+            ConfigureAuthentication(services);
+            ConfigureSwagger(services);
+
             // Configure Repositories & Services
             services.AddScoped<IMessageService, MessageService>();
             services.AddScoped<IChatService, ChatService>();
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<IChatRepository, ChatRepository>();
             services.AddScoped<IMessageRepository, MessageRepository>();
-
-            ConfigureSwagger(services);
-            ConfigureAuthentication(services);
-
-            var mapperConf = new MapperConfiguration(_ =>
-                _.AddProfile(new AppProfile()));
+            services.AddScoped<ITokenService, TokenService>();
             
-            var mapper = mapperConf.CreateMapper();
-            services.AddSingleton(mapper);
-
-            services.AddControllers();
+            //Configure DbContext
+            var connection = Configuration.GetConnectionString("Default");
+            services.AddDbContext<ApplicationContext>(_ => _.UseNpgsql(connection,  
+                x => x.MigrationsAssembly("Message.Database")));
+            
             services.AddSignalR();
+            services.AddHttpContextAccessor();
+            
+            var mapperConf = new MapperConfiguration(_ =>
+            {
+                _.AddProfile<AppProfile>();
+            });
+
+            var mapper = mapperConf.CreateMapper();
+            services.AddAutoMapper(typeof(Startup));
+            services.AddSingleton(mapper);
+            
+            services.Configure<RouteOptions>(options => options.LowercaseUrls = true);
+            
+            services.AddControllers();
         }
         
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
@@ -72,9 +82,9 @@ namespace Message.API
 
             app.UseHttpsRedirection();
             app.UseRouting();
-
-            app.UseAuthorization();
+            
             app.UseAuthentication();
+            app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>  
             {
@@ -149,6 +159,5 @@ namespace Message.API
                     x.SaveToken = true;
                 });
         }
-
     }
 }

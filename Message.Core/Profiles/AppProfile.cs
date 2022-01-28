@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Message.Common.Result;
 using Message.Core.Dto;
 using Message.Core.Dto.Chat;
 using Message.Database.Models;
@@ -9,15 +10,17 @@ namespace Message.Core.Profiles
     {
         public AppProfile()
         {
-            CreateMap<ChatEntity, ChatDto>();
-            CreateMap<ChatDto, ChatEntity>();
-            
+            CreateMap<ChatEntity, ChatDto>().ReverseMap();
+
             //Params not set (\_/)
             //               (•.•)
             //               ♥< \
+
+            CreateMap<MessageEntity, MessageDto>().ReverseMap();
             
-            CreateMap<MessageEntity, MessageDto>();
-            CreateMap<MessageDto, MessageEntity>();
+            CreateMap<ChatEntity, ResultContainer<ChatDto>>()
+                .ForMember("Data", opt =>
+                    opt.MapFrom(u => u));
         }
     }
 }
