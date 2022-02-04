@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 using AutoMapper;
 using Message.Common.Enums;
 using Message.Common.Result;
@@ -39,7 +40,7 @@ namespace Message.Core.Services.Message
             return result;
         }
 
-        public async Task<ResultContainer<MessageDto>> GetMessageById(int mesId)
+        public async Task<ResultContainer<MessageDto>> GetMessageById(Guid mesId)
         {
             var result = new ResultContainer<MessageDto>();
             var message = await _messageRepository.GetById(mesId);

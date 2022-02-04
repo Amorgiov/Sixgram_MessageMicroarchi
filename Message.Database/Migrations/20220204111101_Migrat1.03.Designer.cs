@@ -11,8 +11,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Message.Database.Migrations
 {
     [DbContext(typeof(ApplicationContext))]
-    [Migration("20220126100945_MigrationT")]
-    partial class MigrationT
+    [Migration("20220204111101_Migrat1.03")]
+    partial class Migrat103
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -24,22 +24,21 @@ namespace Message.Database.Migrations
 
             modelBuilder.Entity("Message.Database.Models.ChatEntity", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
-                        .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
+                        .HasColumnType("uuid");
 
-                    b.Property<int>("Admin")
-                        .HasColumnType("integer");
+                    b.Property<Guid?>("Admin")
+                        .HasColumnType("uuid");
 
                     b.Property<DateTime>("Created")
                         .HasColumnType("timestamp without time zone");
 
-                    b.Property<List<int>>("Members")
-                        .HasColumnType("integer[]");
+                    b.Property<List<Guid>>("Members")
+                        .HasColumnType("uuid[]");
 
-                    b.Property<List<int>>("Messages")
-                        .HasColumnType("integer[]");
+                    b.Property<List<Guid>>("Messages")
+                        .HasColumnType("uuid[]");
 
                     b.Property<string>("Title")
                         .HasColumnType("text");
@@ -54,19 +53,18 @@ namespace Message.Database.Migrations
 
             modelBuilder.Entity("Message.Database.Models.MessageEntity", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
-                        .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
+                        .HasColumnType("uuid");
 
-                    b.Property<int>("ChatId")
-                        .HasColumnType("integer");
+                    b.Property<Guid>("ChatId")
+                        .HasColumnType("uuid");
 
                     b.Property<DateTime>("Created")
                         .HasColumnType("timestamp without time zone");
 
-                    b.Property<int>("SenderId")
-                        .HasColumnType("integer");
+                    b.Property<Guid>("SenderId")
+                        .HasColumnType("uuid");
 
                     b.Property<string>("Text")
                         .HasColumnType("text");
@@ -76,7 +74,20 @@ namespace Message.Database.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("ChatId");
+
                     b.ToTable("Messages");
+                });
+
+            modelBuilder.Entity("Message.Database.Models.MessageEntity", b =>
+                {
+                    b.HasOne("Message.Database.Models.ChatEntity", "Chat")
+                        .WithMany()
+                        .HasForeignKey("ChatId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Chat");
                 });
 #pragma warning restore 612, 618
         }

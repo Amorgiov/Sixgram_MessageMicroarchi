@@ -1,9 +1,11 @@
-﻿using System.Net.Http;
+﻿using System;
+using System.Net.Http;
 using System.Net.Http.Json;
 using System.Threading.Tasks;
 using Message.Common.Result;
 using Message.Core.Dto;
 using Message.Core.Dto.Chat;
+using Message.Core.Dto.Update;
 using Message.Core.Services.Chat;
 using Message.Database.Models;
 using Microsoft.AspNetCore.Authorization;
@@ -41,27 +43,27 @@ namespace Message.API.Controllers
         /// </summary>
         /// <param name="chatId"></param>
         /// <returns>Deleted model</returns>
-        [HttpPost("[action]/{chatId:int}")]
-        public async Task<ActionResult<ChatDto>> DeleteChat(int chatId)
-            => await ReturnResult<ResultContainer<ChatDto>, ChatDto>(_chatService.DeleteChat(chatId));
+        [HttpPost("[action]/{chatId:Guid}")]
+        public async Task<ActionResult<ChatDto>> DeleteChat(Guid chatId)
+            => await ReturnResult<ResultContainer<ChatUpdateResponseDto>, ChatUpdateResponseDto>(_chatService.DeleteChat(chatId));
 
         /// <summary>
         /// Editing selected chat
         /// </summary>
         /// <param name="model"></param>
-        /// <param name="chatId"></param>
+        /// <param name="id"></param>
         /// <returns>Edited model</returns>
-        [HttpPut("editing")]
-        public async Task<ActionResult<ChatDto>> EditChat(ChatDto model)
-            => await ReturnResult<ResultContainer<ChatDto>, ChatDto>(_chatService.EditChat(model));
+        [HttpPut("{id:Guid}/editing")]
+        public async Task<ActionResult<ChatUpdateRequestDto>> EditChat(ChatUpdateRequestDto model, Guid id)
+            => await ReturnResult<ResultContainer<ChatUpdateResponseDto>, ChatUpdateResponseDto>(_chatService.EditChat(model, id));
         
         /// <summary>
         /// Pull chat with id - %
         /// </summary>
         /// <param name="id"></param>
         /// <returns>ChatEntity model</returns>
-        [HttpGet("{id:int}")]
-        public async Task<ActionResult<ChatDto>> GetChatById(int id)
+        [HttpGet("{id:Guid}")]
+        public async Task<ActionResult<ChatDto>> GetChatById(Guid id)
             => await ReturnResult<ResultContainer<ChatDto>, ChatDto>(_chatService.GetChatById(id));
     }
 }

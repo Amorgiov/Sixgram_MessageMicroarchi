@@ -8,9 +8,9 @@ namespace Message.Database.Repository.Base
         where TModel : BaseModel
     {
         Task<TModel> Create(TModel data);
-        Task<TModel> GetById(int id);
+        Task<TModel> GetById(Guid id);
         TModel GetOne(Func<TModel, bool> predicate);
         Task<TModel> Update(TModel item);
-        Task<TModel> Delete(int id);
+        Task<TModel> Delete(Guid id);
     }
 }

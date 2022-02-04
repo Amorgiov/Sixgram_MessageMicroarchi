@@ -28,7 +28,7 @@ namespace Message.Database.Repository.Base
         public async Task<TModel> Update(TModel item)
         {
             item.Updated = DateTime.Now;
-            await _context.Set<TModel>().AddAsync(item);
+            _context.Set<TModel>().Update(item);
             await _context.SaveChangesAsync();
             return item;
         }
@@ -36,10 +36,10 @@ namespace Message.Database.Repository.Base
         public TModel GetOne (Func<TModel, bool> predicate)
             => _context.Set<TModel>().AsNoTracking().FirstOrDefault(predicate);
         
-        public async Task<TModel> GetById(int id)
+        public async Task<TModel> GetById(Guid id)
             => await _context.Set<TModel>().FindAsync(id);
 
-        public async Task<TModel> Delete(int id)
+        public async Task<TModel> Delete(Guid id)
         {
             var item = await _context.Set<TModel>().FindAsync(id);
             if (item == null)
