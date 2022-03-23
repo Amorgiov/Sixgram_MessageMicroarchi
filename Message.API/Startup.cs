@@ -48,6 +48,10 @@ namespace Message.API
             services.AddScoped<IChatRepository, ChatRepository>();
             services.AddScoped<IMessageRepository, MessageRepository>();
             services.AddScoped<ITokenService, TokenService>();
+            services.AddScoped<IMessageAssemblyService, MessageAssemblyService>();
+            services.AddScoped<IFileStorageHttpService, FileStorageHttpService>();
+            services.AddScoped<IMessageService, MessageService>();
+
             
             //Configure DbContext
             var connection = Configuration.GetConnectionString("Default");
@@ -67,6 +71,12 @@ namespace Message.API
             services.AddSingleton(mapper);
             
             services.Configure<RouteOptions>(options => options.LowercaseUrls = true);
+            
+            //Configure HttpClient
+            services.AddHttpClient("auth",
+                p => { p.BaseAddress = new Uri("http://localhost:5176"); });
+            services.AddHttpClient("file_storage",
+                c => { c.BaseAddress = new Uri("http://localhost:5000"); });
             
             services.AddControllers();
         }

@@ -2,6 +2,7 @@
 using Message.Common.Result;
 using Message.Core.Dto;
 using Message.Core.Dto.Chat;
+using Message.Core.Dto.Message;
 using Message.Core.Dto.Update;
 using Message.Database.Models;
 
@@ -14,7 +15,6 @@ namespace Message.Core.Profiles
             CreateMap<ChatEntity, ChatDto>().ReverseMap();
             CreateMap<ChatEntity, ChatUpdateRequestDto>().ReverseMap();
             CreateMap<ChatEntity, ChatUpdateResponseDto>().ReverseMap();
-            
 
             //Params not set (\_/)
             //               (•.•)

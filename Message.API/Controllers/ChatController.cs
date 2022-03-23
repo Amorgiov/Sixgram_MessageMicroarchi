@@ -43,7 +43,7 @@ namespace Message.API.Controllers
         /// </summary>
         /// <param name="chatId"></param>
         /// <returns>Deleted model</returns>
-        [HttpPost("[action]/{chatId:Guid}")]
+        [HttpDelete("[action]/{chatId:Guid}")]
         public async Task<ActionResult<ChatDto>> DeleteChat(Guid chatId)
             => await ReturnResult<ResultContainer<ChatUpdateResponseDto>, ChatUpdateResponseDto>(_chatService.DeleteChat(chatId));
 
