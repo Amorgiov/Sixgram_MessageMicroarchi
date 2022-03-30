@@ -20,6 +20,7 @@ namespace Message.Core.Services.Chat
         private readonly IMapper _mapper;
         private readonly IChatRepository _chatRepository;
         private readonly ITokenService _tokenService;
+
         public ChatService(IMapper mapper, IChatRepository chatRepository, ITokenService tokenService)
         {
             _mapper = mapper;
@@ -40,24 +41,24 @@ namespace Message.Core.Services.Chat
             var chat = await _chatRepository.Delete(id);
             if (chat == null)
             {
-                result.ErrorType = ErrorType.NotFound;
+                result.ResponseStatusCode = ResponseStatusCode.NotFound;
                 return result;
             }
 
             result = _mapper.Map<ResultContainer<ChatUpdateResponseDto>>(chat);
             return result;
         }
-        
+
         public async Task<ResultContainer<ChatUpdateResponseDto>> EditChat(ChatUpdateRequestDto data, Guid id)
         {
             var result = new ResultContainer<ChatUpdateResponseDto>();
-            
+
             //var user = _tokenService.GetCurrentUserId();
             var chat = _chatRepository.GetById(id);
-            
+
             if (chat == null)
             {
-                result.ErrorType = ErrorType.NotFound;
+                result.ResponseStatusCode = ResponseStatusCode.NotFound;
                 return result;
             }
 
@@ -74,10 +75,9 @@ namespace Message.Core.Services.Chat
             var chat = await _chatRepository.GetById(id);
             if (chat == null)
             {
-                result.ErrorType = ErrorType.NotFound;
+                result.ResponseStatusCode = ResponseStatusCode.NotFound;
             }
 
-            result = _mapper.Map<ResultContainer<ChatDto>>(chat);
             return result;
         }
     }

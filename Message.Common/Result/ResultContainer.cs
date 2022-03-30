@@ -2,9 +2,8 @@
 
 namespace Message.Common.Result
 {
-    public class ResultContainer<T>
+    public class ResultContainer
     {
-        public T Data { get; set; }
-        public ErrorType? ErrorType { get; set; }
+        public ResponseStatusCode? ResponseStatusCode { get; set; }
     }
 }

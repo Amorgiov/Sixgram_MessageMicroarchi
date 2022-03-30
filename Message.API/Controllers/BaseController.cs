@@ -13,21 +13,30 @@ namespace Message.API.Controllers
         {
             var result = await task;
 
-            if (result.ErrorType.HasValue)
+            if (result.ResponseStatusCode == null)
             {
-                return result.ErrorType switch
-                {
-                    ErrorType.Unauthorized => Unauthorized(),
-                    ErrorType.BadRequest => BadRequest(),
-                    ErrorType.NotFound => NotFound(),
-                    _ => throw new ArgumentOutOfRangeException()
-                };
+                throw new ArgumentOutOfRangeException(nameof(result.ResponseStatusCode),
+                    $"Property {nameof(result.ResponseStatusCode)} can not be null");
             }
 
-            if (result.Data == null)
-                return NoContent();
-            
-            return Ok(result.Data);
+            return result.ResponseStatusCode switch
+            {
+                ResponseStatusCode.Ok => Ok(result.Data),
+                _ => StatusCode((int)result.ResponseStatusCode)
+            };
+        }
+
+        protected async Task<ActionResult> ReturnResult(Task<ResultContainer> task)
+        {
+            var result = await task;
+
+            if (result.ResponseStatusCode == null)
+            {
+                throw new ArgumentOutOfRangeException(nameof(result.ResponseStatusCode),
+                    $"Property {nameof(result.ResponseStatusCode)} can not be null");
+            }
+
+            return StatusCode((int)result.ResponseStatusCode);
         }
     }
 }

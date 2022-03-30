@@ -52,6 +52,12 @@ namespace Message.Core.Services.Message
             return result;
         }
 
+        public async Task<ResultContainer> SendFile()
+        {
+            
+        } 
+        
+        
         public async Task<ResultContainer<MessageDto>> GetMessageById(Guid mesId)
         {
             var result = new ResultContainer<MessageDto>();

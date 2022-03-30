@@ -18,7 +18,7 @@ namespace Message.Core.Services.File
             _fileStorageHttp = fileStorageHttp;
         }
         
-        public async Task<Guid?> Send(IFormFile file, Guid postId)
+        public async Task<Guid?> CreateFile(IFormFile file, Guid postId)
         {
             var data = await CreateContent(file);
 
