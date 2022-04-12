@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Net;
 using System.Threading.Tasks;
 using Message.Common.Enums;
 using Message.Core.Dto.Message;
@@ -30,7 +31,7 @@ namespace Message.Core.Services.File
                 FileSource = FileSource.Message
             };
 
-            var content = await _fileStorageHttp.SendRequest(fileSendingDto);
+            var content = await _fileStorageHttp.SendCreateRequest(fileSendingDto);
 
             var json = JObject.Parse(content);
 
@@ -45,6 +46,13 @@ namespace Message.Core.Services.File
             var data = binaryReader.ReadBytes((int) file.OpenReadStream().Length);
 
             return data;
+        }
+        
+        public async Task<bool?> DeleteFile(Guid fileId)
+        {
+            var content = await _fileStorageHttp.SendDeleteRequest(fileId);
+
+            return content == HttpStatusCode.NoContent;
         }
     }
 }

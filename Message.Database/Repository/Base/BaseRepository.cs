@@ -37,14 +37,10 @@ namespace Message.Database.Repository.Base
             => _context.Set<TModel>().AsNoTracking().FirstOrDefault(predicate);
         
         public async Task<TModel> GetById(Guid id)
-            => await _context.Set<TModel>().FindAsync(id);
+            => await _context.Set<TModel>().AsNoTracking().FirstAsync(p => p.Id == id);
 
-        public async Task<TModel> Delete(Guid id)
+        public async Task<TModel> Delete(TModel item)
         {
-            var item = await _context.Set<TModel>().FindAsync(id);
-            if (item == null)
-                return null;
-
             _context.Set<TModel>().Remove(item);
             await _context.SaveChangesAsync();
             return item;

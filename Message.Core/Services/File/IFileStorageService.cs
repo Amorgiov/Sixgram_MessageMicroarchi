@@ -7,5 +7,6 @@ namespace Message.Core.Services.File
     public interface IFileStorageService
     {
         Task<Guid?> CreateFile(IFormFile file, Guid sourceId);
+        Task<bool?> DeleteFile(Guid fileId);
     }
 }

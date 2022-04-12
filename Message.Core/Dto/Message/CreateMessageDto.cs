@@ -4,9 +4,10 @@ using Microsoft.AspNetCore.Http;
 
 namespace Message.Core.Dto.Message
 {
-    public class MessageDto : BaseModel
+    public class CreateMessageDto : BaseModel
     {
-        public string Text { get; set; }
+        public IFormFile? File { get; set; }
         public Guid SenderId { get; set; }
+        public string Text { get; set; }
     }
 }

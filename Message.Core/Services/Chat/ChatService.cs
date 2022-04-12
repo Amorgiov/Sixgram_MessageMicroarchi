@@ -38,13 +38,16 @@ namespace Message.Core.Services.Chat
         public async Task<ResultContainer<ChatUpdateResponseDto>> DeleteChat(Guid id)
         {
             var result = new ResultContainer<ChatUpdateResponseDto>();
-            var chat = await _chatRepository.Delete(id);
+            var chat = _chatRepository.GetById(id);
+            
             if (chat == null)
             {
                 result.ResponseStatusCode = ResponseStatusCode.NotFound;
                 return result;
             }
-
+            
+            await _chatRepository.Delete(await chat);
+            
             result = _mapper.Map<ResultContainer<ChatUpdateResponseDto>>(chat);
             return result;
         }

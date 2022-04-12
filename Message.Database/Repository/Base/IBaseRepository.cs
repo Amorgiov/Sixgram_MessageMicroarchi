@@ -11,6 +11,6 @@ namespace Message.Database.Repository.Base
         Task<TModel> GetById(Guid id);
         TModel GetOne(Func<TModel, bool> predicate);
         Task<TModel> Update(TModel item);
-        Task<TModel> Delete(Guid id);
+        Task<TModel> Delete(TModel id);
     }
 }

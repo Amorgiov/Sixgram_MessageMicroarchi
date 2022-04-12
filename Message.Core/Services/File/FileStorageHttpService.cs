@@ -1,14 +1,16 @@
 ﻿using System;
+using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
 using Message.Core.Dto.Message;
+using Message.Core.Options;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Http;
 
 namespace Message.Core.Services.File
 {
-    public class FileStorageHttpService
+    public class FileStorageHttpService : IFileStorageHttpService
     {
         private readonly IHttpClientFactory _httpClientFactory;
         private readonly HttpContext _httpContext;
@@ -18,7 +20,7 @@ namespace Message.Core.Services.File
         (
             IHttpClientFactory httpClientFactory,
             IHttpContextAccessor httpContextAccessor,
-            BaseAddresses addresses
+            BaseAdresses addresses
         )
         {
             _httpClientFactory = httpClientFactory;
@@ -27,7 +29,7 @@ namespace Message.Core.Services.File
         }
 
 
-        public async Task<string> SendRequest(FileSendingDto data)
+        public async Task<string> SendCreateRequest(FileSendingDto data)
         {
             using  var client = _httpClientFactory.CreateClient("FileStorage");
 
@@ -48,6 +50,25 @@ namespace Message.Core.Services.File
             {
                 var responseMessage = await client.PostAsync("uploadfile", multiContent);
                 var result = await responseMessage.Content.ReadAsStringAsync();
+                return result;
+            }
+            catch (HttpRequestException)
+            {
+                return null;
+            }
+        }
+        
+        public async Task<HttpStatusCode?> SendDeleteRequest(Guid fileId)
+        {
+            using var client = _httpClientFactory.CreateClient("FileStorage");
+
+            client.DefaultRequestHeaders.Authorization =
+                new AuthenticationHeaderValue("Bearer", await _httpContext.GetTokenAsync("access_token"));
+
+            try
+            {
+                var responseMessage = await client.DeleteAsync($"{fileId}");
+                var result = responseMessage.StatusCode;
                 return result;
             }
             catch (HttpRequestException)

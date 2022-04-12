@@ -5,6 +5,7 @@ using System.Text;
 using AutoMapper;
 using Message.Core.Profiles;
 using Message.Core.Services.Chat;
+using Message.Core.Services.File;
 using Message.Core.Services.Hubs;
 using Message.Core.Services.Message;
 using Message.Core.Services.Token;
@@ -48,7 +49,7 @@ namespace Message.API
             services.AddScoped<IChatRepository, ChatRepository>();
             services.AddScoped<IMessageRepository, MessageRepository>();
             services.AddScoped<ITokenService, TokenService>();
-            services.AddScoped<IMessageAssemblyService, MessageAssemblyService>();
+            services.AddScoped<IFileStorageService, FileStorageService>();
             services.AddScoped<IFileStorageHttpService, FileStorageHttpService>();
             services.AddScoped<IMessageService, MessageService>();
 

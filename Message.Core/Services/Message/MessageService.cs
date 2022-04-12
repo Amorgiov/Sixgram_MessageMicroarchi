@@ -5,6 +5,7 @@ using Message.Common.Enums;
 using Message.Common.Result;
 using Message.Core.Dto;
 using Message.Core.Dto.Message;
+using Message.Core.Services.File;
 using Message.Core.Services.Token;
 using Message.Database.Models;
 using Message.Database.Repository.Chat;
@@ -19,56 +20,99 @@ namespace Message.Core.Services.Message
         private readonly IMapper _mapper;
         private readonly ITokenService _tokenService;
         private readonly IMessageRepository _messageRepository;
+        private IFileStorageService _fileStorage;
 
         public MessageService
         (
             IMapper mapper,
             IMessageRepository messageRepository, 
-            ITokenService tokenService)
+            ITokenService tokenService,
+            IFileStorageService fileStorageService
+        )
         {
             _mapper = mapper;
             _messageRepository = messageRepository;
             _tokenService = tokenService;
+            _fileStorage = fileStorageService;
         }
 
-        public async Task<ResultContainer<MessageDto>> AddMessage(MessageDto data, Guid chatId)
+        public async Task<ResultContainer> AddMessage(CreateMessageDto data, Guid chatId)
         {
-            var result = new ResultContainer<MessageDto>();
+            var result = new ResultContainer<CreateMessageDto>();
 
-            if (data == null)
+            if (data.File == null)
             {
-                result.ErrorType = ErrorType.BadRequest;
+                result.ResponseStatusCode = ResponseStatusCode.BadRequest;
                 return result;
             }
 
+            var messageId = new Guid();
+            
+            var fileId = await _fileStorage.CreateFile(data.File, messageId);
+
+            if (fileId == null)
+            {
+                result.ResponseStatusCode = ResponseStatusCode.BadRequest;
+                return result;
+            }
+            
             var message = new MessageEntity()
             {
+                Id = messageId,
                 SenderId = _tokenService.GetCurrentUserId(),
                 Text = data.Text,
-                ChatId = chatId
+                ChatId = chatId,
+                FileId = fileId
             };
+
+            await _messageRepository.Create(message);
             
-            result = _mapper.Map<ResultContainer<MessageDto>>(await _messageRepository.Create(message));
+            result.ResponseStatusCode = ResponseStatusCode.NoContent;
+            
             return result;
         }
 
-        public async Task<ResultContainer> SendFile()
+        public async Task<ResultContainer<CreateMessageDto>> GetMessageById(Guid mesId)
         {
-            
-        } 
-        
-        
-        public async Task<ResultContainer<MessageDto>> GetMessageById(Guid mesId)
-        {
-            var result = new ResultContainer<MessageDto>();
+            var result = new ResultContainer<CreateMessageDto>();
             var message = await _messageRepository.GetById(mesId);
 
             if (message == null)
             {
-                result.ErrorType = ErrorType.NotFound;
+                result.ResponseStatusCode = ResponseStatusCode.NotFound;
+                return result;
             }
 
-            result = _mapper.Map<ResultContainer<MessageDto>>(message);
+            result = _mapper.Map<ResultContainer<CreateMessageDto>>(message);
+            result.ResponseStatusCode = ResponseStatusCode.Ok;
+            
+            return result;
+        }
+        
+        public async Task<ResultContainer> Delete(Guid messageId)
+        {
+            var result = new ResultContainer();
+
+            var message = await _messageRepository.GetById(messageId);
+
+            if (message == null)
+            {
+                result.ResponseStatusCode = ResponseStatusCode.NotFound;
+                return result;
+            }
+
+            if (message.SenderId != _tokenService.GetCurrentUserId())
+            {
+                result.ResponseStatusCode = ResponseStatusCode.BadRequest;
+                return result;
+            }
+        
+            await _messageRepository.Delete(message);
+
+            await _fileStorage.DeleteFile((Guid)message.FileId);
+
+            result.ResponseStatusCode = ResponseStatusCode.NoContent;
+
             return result;
         }
     }

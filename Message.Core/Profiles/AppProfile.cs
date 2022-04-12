@@ -20,7 +20,7 @@ namespace Message.Core.Profiles
             //               (•.•)
             //               ♥< \
 
-            CreateMap<MessageDto, MessageEntity>().ReverseMap();
+            CreateMap<CreateMessageDto, MessageEntity>().ReverseMap();
             
             CreateMap<ChatEntity, ResultContainer<ChatUpdateRequestDto>>()
                 .ForMember("Data", opt =>
