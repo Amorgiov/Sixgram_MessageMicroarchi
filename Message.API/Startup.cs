@@ -3,6 +3,7 @@ using System.IO;
 using System.Reflection;
 using System.Text;
 using AutoMapper;
+using Message.Core.Options;
 using Message.Core.Profiles;
 using Message.Core.Services.Chat;
 using Message.Core.Services.File;
@@ -70,6 +71,10 @@ namespace Message.API
             var mapper = mapperConf.CreateMapper();
             services.AddAutoMapper(typeof(Startup));
             services.AddSingleton(mapper);
+            
+            services.Configure<BaseAdresses>(Configuration.GetSection(BaseAdresses.BaseAddress));
+            var addressesOptions = Configuration.GetSection(BaseAdresses.BaseAddress).Get<BaseAdresses>();
+            services.AddSingleton(addressesOptions);
             
             services.Configure<RouteOptions>(options => options.LowercaseUrls = true);
             

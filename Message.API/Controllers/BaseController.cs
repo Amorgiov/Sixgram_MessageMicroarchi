@@ -7,8 +7,17 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Message.API.Controllers
 {
+    /// <inheritdoc />
     public class BaseController : Controller
     {
+        /// <summary>
+        /// ...
+        /// </summary>
+        /// <param name="task"></param>
+        /// <typeparam name="T"></typeparam>
+        /// <typeparam name="TM"></typeparam>
+        /// <returns></returns>
+        /// <exception cref="ArgumentOutOfRangeException"></exception>
         protected async Task<ActionResult> ReturnResult<T, TM>(Task<T> task) where T : ResultContainer<TM>
         {
             var result = await task;
@@ -26,6 +35,12 @@ namespace Message.API.Controllers
             };
         }
 
+        /// <summary>
+        /// ...
+        /// </summary>
+        /// <param name="task"></param>
+        /// <returns></returns>
+        /// <exception cref="ArgumentOutOfRangeException"></exception>
         protected async Task<ActionResult> ReturnResult(Task<ResultContainer> task)
         {
             var result = await task;

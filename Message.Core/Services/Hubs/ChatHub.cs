@@ -8,19 +8,29 @@ namespace Message.Core.Services.Hubs
     [Authorize]
     public class ChatHub : Hub<IChatClient>
     {
-        private string UserName => Context?.User?.Identity?.Name ?? "Unknown"; 
+        private string UserName => Context?.User?.Identity?.Name ?? "Unknown";
         public override async Task OnDisconnectedAsync(Exception? exception)
         {
-            await Groups.RemoveFromGroupAsync(Context.ConnectionId, "SignalR Users");
             await base.OnDisconnectedAsync(exception);
         }
         
         public override async Task OnConnectedAsync()
         {
-            await Groups.AddToGroupAsync(Context.ConnectionId, "SignalR Users");
             await base.OnConnectedAsync();
         }
 
+        public async Task AddToGroup(string groupName)
+        {
+            await Groups.AddToGroupAsync(Context.ConnectionId, groupName);
+            await Clients.Group(groupName).ReceiveMessage(UserName, $" has joined the group {groupName}.");
+        }
+        
+        public async Task RemoveFromGroup(string groupName)
+        {
+            await Groups.RemoveFromGroupAsync(Context.ConnectionId, groupName);
+            await Clients.Group(groupName).ReceiveMessage(UserName, $" has left the group {groupName}.");
+        }
+        
         [HubMethodName("SendAll")]
         public async Task SendMessage(string message) => await Clients.All.ReceiveMessage(UserName, message);
 

@@ -12,6 +12,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Message.API.Controllers
 {
+    /// <inheritdoc />
     [ApiVersion("1.0")]
     [ApiController]
     [Authorize]
@@ -47,7 +48,7 @@ namespace Message.API.Controllers
         /// <param name="mesId"></param>
         /// <response code="204">Success</response>
         /// <response code="400">There is no file in the request</response>
-        [HttpGet("messages/{mesId:guid}")]
+        [HttpGet("GetById/{mesId:guid}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [AllowAnonymous]
@@ -60,7 +61,7 @@ namespace Message.API.Controllers
         /// </summary>
         /// <param name="mesId"></param>
         /// <returns></returns>
-        [HttpGet("messages/{mesId:guid}")]
+        [HttpGet("deleteMessages/{mesId:guid}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [AllowAnonymous]
