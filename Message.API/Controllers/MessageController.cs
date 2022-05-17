@@ -1,11 +1,8 @@
 ﻿using System;
 using System.Threading.Tasks;
 using Message.Common.Result;
-using Message.Core.Dto.Chat;
 using Message.Core.Dto.Message;
-using Message.Core.Dto.Update;
 using Message.Core.Services.Message;
-using Message.Database.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -31,41 +28,41 @@ namespace Message.API.Controllers
         /// Creating messages and files
         /// </summary>
         /// <param name="data"></param>
-        /// <param name="chatId"></param>
+        /// <param name="id"></param>
         /// <response code="204">Success</response>
         /// <response code="400">There is no file in the request</response>
-        [HttpPost("{chatId:guid}/messages")]
+        [HttpPost("chat/{id:guid}/message")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [RequestSizeLimit(MaxFileSize)]
         [RequestFormLimits(MultipartBodyLengthLimit = MaxFileSize)]
-        public async Task<ActionResult> AddMessage([FromForm] CreateMessageDto data, Guid chatId)
-            => await ReturnResult(_messageService.AddMessage(data, chatId));
+        public async Task<ActionResult> AddMessage([FromForm] CreateMessageDto data, Guid id)
+            => await ReturnResult(_messageService.AddMessage(data, id));
         
         /// <summary>
-        /// Get message by mesId
+        /// Get message by id
         /// </summary>
-        /// <param name="mesId"></param>
+        /// <param name="id"></param>
         /// <response code="204">Success</response>
         /// <response code="400">There is no file in the request</response>
-        [HttpGet("GetById/{mesId:guid}")]
+        [HttpGet("message/{id:guid}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [AllowAnonymous]
-        public async Task<ActionResult<CreateMessageDto>> GetMessageById(Guid mesId)
+        public async Task<ActionResult<CreateMessageDto>> GetMessageById(Guid id)
             => await ReturnResult<ResultContainer<CreateMessageDto>, CreateMessageDto>
-                (_messageService.GetMessageById(mesId));
-        
+                (_messageService.GetMessageById(id));
+
         /// <summary>
-        /// Delete messages by mesId
+        /// Delete messages by id
         /// </summary>
-        /// <param name="mesId"></param>
+        /// <param name="id"></param>
         /// <returns></returns>
-        [HttpGet("deleteMessages/{mesId:guid}")]
+        [HttpDelete("message/{id:guid}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [AllowAnonymous]
-        public async Task<ActionResult> Delete(Guid mesId)
-            => await ReturnResult(_messageService.Delete(mesId));
+        public async Task<ActionResult> Delete(Guid id)
+            => await ReturnResult(_messageService.Delete(id));
     }
 }

@@ -37,7 +37,7 @@ namespace Message.Database.Repository.Base
             => _context.Set<TModel>().AsNoTracking().FirstOrDefault(predicate);
         
         public async Task<TModel> GetById(Guid id)
-            => await _context.Set<TModel>().AsNoTracking().FirstAsync(p => p.Id == id);
+            => await _context.Set<TModel>().AsNoTracking().FirstOrDefaultAsync(p => p.Id == id);
 
         public async Task<TModel> Delete(TModel item)
         {
