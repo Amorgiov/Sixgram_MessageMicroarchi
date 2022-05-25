@@ -54,5 +54,11 @@ namespace Message.Core.Services.File
 
             return content == HttpStatusCode.NoContent;
         }
+
+        public async Task<string> GetFile(Guid fileId)
+        {
+            var content = await _fileStorageHttp.SendGetRequest(fileId);
+            return content;
+        }
     }
 }

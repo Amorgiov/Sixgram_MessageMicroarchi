@@ -10,6 +10,8 @@ namespace Message.Database.Models
         public Guid? SenderId { get; set; }
         public Guid? FileId { get; set; }
         public string Text { get; set; }
+        
+        [ForeignKey("ChatEntity")]
         public Guid ChatId { get; set; }
 
         public ChatEntity Chat { get; set; }

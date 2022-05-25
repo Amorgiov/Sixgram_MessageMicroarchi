@@ -7,8 +7,9 @@ namespace Message.Database.Models
     public class ChatEntity : BaseModel
     {
         public string Title { get; set; }
-        public List<Guid> Messages { get; set; }
-        public List<Guid> Members { get; set; }
         public Guid? Admin { get; set; }
+        
+        public ICollection<MemberEntity> Members { get; set; }
+        public ICollection<MessageEntity> Messages { get; set; }
     }
 }

@@ -39,23 +39,21 @@ namespace Message.Core.Services.Message
         public async Task<ResultContainer> AddMessage(CreateMessageDto data, Guid chatId)
         {
             var result = new ResultContainer<CreateMessageDto>();
-
-            if (data.File == null)
-            {
-                result.ResponseStatusCode = ResponseStatusCode.BadRequest;
-                return result;
-            }
-
+            Guid? fileId = null;
+            
             var messageId = new Guid();
-            
-            var fileId = await _fileStorage.CreateFile(data.File, messageId);
 
-            if (fileId == null)
-            {
-                result.ResponseStatusCode = ResponseStatusCode.BadRequest;
-                return result;
+            if (data.File != null)
+            { 
+                fileId = await _fileStorage.CreateFile(data.File, messageId);
+                
+                if (fileId == null)
+                {
+                    result.ResponseStatusCode = ResponseStatusCode.BadRequest;
+                    return result;
+                }
             }
-            
+
             var message = new MessageEntity()
             {
                 Id = messageId,
@@ -83,7 +81,14 @@ namespace Message.Core.Services.Message
                 return result;
             }
 
-            result = _mapper.Map<ResultContainer<CreateMessageDto>>(message);
+            var messageDto = new CreateMessageDto()
+            {
+                Text = message.Text,
+                SenderId = (Guid) message.SenderId,
+                File = null
+            };
+
+            result = _mapper.Map<ResultContainer<CreateMessageDto>>(messageDto);
             result.ResponseStatusCode = ResponseStatusCode.Ok;
             
             return result;
@@ -109,7 +114,8 @@ namespace Message.Core.Services.Message
         
             await _messageRepository.Delete(message);
 
-            await _fileStorage.DeleteFile((Guid)message.FileId);
+            if (message.FileId != null)
+                await _fileStorage.DeleteFile((Guid)message.FileId);    
 
             result.ResponseStatusCode = ResponseStatusCode.NoContent;
 

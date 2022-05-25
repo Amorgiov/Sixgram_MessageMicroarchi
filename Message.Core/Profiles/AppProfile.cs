@@ -12,7 +12,7 @@ namespace Message.Core.Profiles
     {
         public AppProfile()
         {
-            CreateMap<ChatEntity, ChatDto>().ReverseMap();
+            CreateMap<ChatEntity, ChatRequestDto>().ReverseMap();
             CreateMap<ChatEntity, ChatUpdateRequestDto>().ReverseMap();
             CreateMap<ChatEntity, ChatUpdateResponseDto>().ReverseMap();
 
@@ -27,7 +27,13 @@ namespace Message.Core.Profiles
                     opt.MapFrom(u => u));
             CreateMap<ChatEntity, ResultContainer<ChatUpdateResponseDto>>()
                 .ForMember("Data", opt =>
+                    opt.MapFrom(u => u)); 
+            CreateMap<ChatEntity, ResultContainer<ChatResponseDto>>()
+                .ForMember("Data", opt =>
                     opt.MapFrom(u => u));
+            CreateMap<ChatEntity, ChatResponseDto>()
+                .ForMember("ChatId", opt =>
+                    opt.MapFrom(u => u.Id));
         }
     }
 }
