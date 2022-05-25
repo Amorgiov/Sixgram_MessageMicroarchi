@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Threading.Tasks;
 using Message.Common.Base;
 using Message.Database.Context;
@@ -17,6 +19,17 @@ namespace Message.Database.Repository.Base
             _context = context;
         }
 
+        public async Task<List<TModel>> GetByFilter(Expression<Func<TModel, bool>> predicate)
+        {
+            var result = await GetAll().AsNoTracking().Where(predicate).AsQueryable().ToListAsync();
+            return result;
+        }
+        
+        private IQueryable<TModel> GetAll()
+        {
+            return _context.Set<TModel>().AsQueryable();
+        }
+        
         public async Task<TModel> Create(TModel item)
         {
             item.Created = DateTime.Now;

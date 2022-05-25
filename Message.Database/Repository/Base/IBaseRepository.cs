@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq.Expressions;
 using System.Threading.Tasks;
 using Message.Common.Base;
 
@@ -12,5 +14,6 @@ namespace Message.Database.Repository.Base
         TModel GetOne(Func<TModel, bool> predicate);
         Task<TModel> Update(TModel item);
         Task<TModel> Delete(TModel id);
+        Task<List<TModel>> GetByFilter(Expression<Func<TModel, bool>> predicate);
     }
 }

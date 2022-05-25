@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace Message.API.Controllers
 {
     /// <inheritdoc />
-    public class BaseController : Controller
+    public class BaseController : ControllerBase
     {
         /// <summary>
         /// ...

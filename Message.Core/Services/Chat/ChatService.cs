@@ -54,16 +54,16 @@ namespace Message.Core.Services.Chat
 
             var member = new MemberEntity()
             {
-                UserId = (Guid) currentUser,
+                Id = (Guid) currentUser,
                 ChatId = chat.Id
             };
 
             await _chatRepository.Create(chat);
             await _memberRepository.Create(member);
-            
+
             result = _mapper.Map<ResultContainer<ChatResponseDto>>(chat);
             result.ResponseStatusCode = ResponseStatusCode.Ok;
-            
+
             return result;
         }
 
@@ -81,15 +81,14 @@ namespace Message.Core.Services.Chat
             await _chatRepository.Delete(chat);
 
             result.ResponseStatusCode = ResponseStatusCode.NoContent;
-            
+
             return result;
         }
 
         public async Task<ResultContainer<ChatUpdateResponseDto>> EditChat(ChatUpdateRequestDto data, Guid id)
         {
             var result = new ResultContainer<ChatUpdateResponseDto>();
-
-            //var user = _tokenService.GetCurrentUserId();
+            
             var chat = await _chatRepository.GetById(id);
 
             if (chat == null)
@@ -99,7 +98,6 @@ namespace Message.Core.Services.Chat
             }
 
             chat.Title = data.NewTitle;
-            /*chat.Result.Members = data.NewMembers;*/
 
             result = _mapper.Map<ResultContainer<ChatUpdateResponseDto>>(await _chatRepository.Update(chat));
 
@@ -111,16 +109,47 @@ namespace Message.Core.Services.Chat
         {
             var result = new ResultContainer<ChatResponseDto>();
             var chat = await _chatRepository.GetById(id);
-            
+
             if (chat == null)
             {
                 result.ResponseStatusCode = ResponseStatusCode.NotFound;
             }
 
             result = _mapper.Map<ResultContainer<ChatResponseDto>>(chat);
-            
+
             result.ResponseStatusCode = ResponseStatusCode.Ok;
 
+            return result;
+        }
+
+        public async Task<ResultContainer> AddMember(Guid userId, Guid chatId)
+        {
+            var result = new ResultContainer();
+            var chat = await _chatRepository.GetById(chatId);
+
+            if (chat == null)
+            {
+                result.ResponseStatusCode = ResponseStatusCode.NotFound;
+                return result;
+            }
+
+            var member = new MemberEntity()
+            {
+                UserId = userId,
+                ChatId = chatId
+            };
+
+            var memberInUse = await _memberRepository.GetByFilter(u => u.UserId == userId);
+
+            if (memberInUse.Count > 0)
+            {
+                result.ResponseStatusCode = ResponseStatusCode.BadRequest;
+                return result;
+            }
+
+            await _memberRepository.Create(member);
+
+            result.ResponseStatusCode = ResponseStatusCode.NoContent;
             return result;
         }
     }

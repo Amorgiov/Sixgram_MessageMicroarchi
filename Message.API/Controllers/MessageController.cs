@@ -43,7 +43,7 @@ namespace Message.API.Controllers
         /// Get message by id
         /// </summary>
         /// <param name="id"></param>
-        /// <response code="204">Success</response>
+        /// <response code="200">Success</response>
         /// <response code="400">There is no file in the request</response>
         [HttpGet("message/{id:guid}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
@@ -57,7 +57,9 @@ namespace Message.API.Controllers
         /// Delete messages by id
         /// </summary>
         /// <param name="id"></param>
-        /// <returns></returns>
+        /// <response code="400">There is no file in the request</response>
+        /// <response code="200">Success</response>
+        /// <response code="404">Message not found</response>
         [HttpDelete("message/{id:guid}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]

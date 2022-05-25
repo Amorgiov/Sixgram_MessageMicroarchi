@@ -16,5 +16,7 @@ namespace Message.Core.Services.Chat
         Task<ResultContainer> DeleteChat(Guid id);
         Task<ResultContainer<ChatUpdateResponseDto>> EditChat(ChatUpdateRequestDto model, Guid id);
         Task<ResultContainer<ChatResponseDto>> GetChatById(Guid id);
+        Task<ResultContainer> AddMember(Guid userId, Guid chatId);
+        
     }
 }

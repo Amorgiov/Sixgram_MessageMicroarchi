@@ -33,6 +33,8 @@ namespace Message.API.Controllers
         /// </summary>
         /// <param name="model"></param>
         /// <returns>New ChatEntity model</returns>
+        /// <response code="200">Success</response>
+        /// <response code="401">Unauthorized</response>
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status200OK)]
@@ -44,6 +46,8 @@ namespace Message.API.Controllers
         /// </summary>
         /// <param name="id"></param>
         /// <returns>Deleted model</returns>
+        /// <response code="404">Message not found</response>
+        /// <response code="204">Success</response>
         [HttpDelete("{id:Guid}")]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
@@ -56,6 +60,8 @@ namespace Message.API.Controllers
         /// <param name="model"></param>
         /// <param name="id"></param>
         /// <returns>Edited model</returns>
+        /// <response code="404">Message not found</response>
+        /// <response code="200">Success</response>
         [HttpPut("{id:Guid}")]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status200OK)]
@@ -67,10 +73,27 @@ namespace Message.API.Controllers
         /// </summary>
         /// <param name="id"></param>
         /// <returns>ChatEntity model</returns>
+        /// <response code="404">Message not found</response>
+        /// <response code="200">Success</response>
         [HttpGet("{id:Guid}")]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult<ChatResponseDto>> GetChatById(Guid id)
             => await ReturnResult<ResultContainer<ChatResponseDto>, ChatResponseDto>(_chatService.GetChatById(id));
+        
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        /// <response code="404">Message not found</response>
+        /// <response code="204">Success</response>
+        /// <response code="400">There is no file in the request</response>
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [HttpPost("{chatId:guid}/[action]/{userId:guid}")]
+        public async Task<ActionResult> AddMember(Guid userId, Guid chatId)
+            => await ReturnResult(_chatService.AddMember(userId, chatId));
     }
 }

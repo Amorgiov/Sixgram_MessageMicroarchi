@@ -57,9 +57,6 @@ namespace Message.Database.Migrations
                     b.Property<DateTime?>("Updated")
                         .HasColumnType("timestamp without time zone");
 
-                    b.Property<Guid>("UserId")
-                        .HasColumnType("uuid");
-
                     b.HasKey("Id");
 
                     b.HasIndex("ChatId");
