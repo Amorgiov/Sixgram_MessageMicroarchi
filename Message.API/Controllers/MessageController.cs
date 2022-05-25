@@ -61,6 +61,7 @@ namespace Message.API.Controllers
         [HttpDelete("message/{id:guid}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [AllowAnonymous]
         public async Task<ActionResult> Delete(Guid id)
             => await ReturnResult(_messageService.Delete(id));

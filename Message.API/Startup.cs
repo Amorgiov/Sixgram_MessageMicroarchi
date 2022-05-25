@@ -13,6 +13,7 @@ using Message.Core.Services.Token;
 using Message.Core.Services.User;
 using Message.Database.Context;
 using Message.Database.Repository.Chat;
+using Message.Database.Repository.Member;
 using Message.Database.Repository.Message;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
@@ -49,6 +50,7 @@ namespace Message.API
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<IChatRepository, ChatRepository>();
             services.AddScoped<IMessageRepository, MessageRepository>();
+            services.AddScoped<IMemberRepository, MemberRepository>();
             services.AddScoped<ITokenService, TokenService>();
             services.AddScoped<IFileStorageService, FileStorageService>();
             services.AddScoped<IFileStorageHttpService, FileStorageHttpService>();

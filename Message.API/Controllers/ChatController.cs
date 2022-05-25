@@ -6,6 +6,7 @@ using Message.Core.Dto.Update;
 using Message.Core.Services.Chat;
 using Message.Database.Models;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Message.API.Controllers
@@ -33,8 +34,10 @@ namespace Message.API.Controllers
         /// <param name="model"></param>
         /// <returns>New ChatEntity model</returns>
         [HttpPost]
-        public async Task<ActionResult<ChatDto>> CreateChat(ChatEntity model)
-            => await ReturnResult<ResultContainer<ChatDto>, ChatDto>(_chatService.CreateChat(model));
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<ActionResult<ChatResponseDto>> CreateChat(ChatRequestDto model)
+            => await ReturnResult<ResultContainer<ChatResponseDto>, ChatResponseDto>(_chatService.CreateChat(model));
         
         /// <summary>
         /// Deleting the chat room
@@ -42,8 +45,10 @@ namespace Message.API.Controllers
         /// <param name="id"></param>
         /// <returns>Deleted model</returns>
         [HttpDelete("{id:Guid}")]
-        public async Task<ActionResult<ChatDto>> DeleteChat(Guid id)
-            => await ReturnResult<ResultContainer<ChatUpdateResponseDto>, ChatUpdateResponseDto>(_chatService.DeleteChat(id));
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        public async Task<ActionResult> DeleteChat(Guid id)
+            => await ReturnResult(_chatService.DeleteChat(id));
 
         /// <summary>
         /// Editing selected chat
@@ -52,6 +57,8 @@ namespace Message.API.Controllers
         /// <param name="id"></param>
         /// <returns>Edited model</returns>
         [HttpPut("{id:Guid}")]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult<ChatUpdateRequestDto>> EditChat(ChatUpdateRequestDto model, Guid id)
             => await ReturnResult<ResultContainer<ChatUpdateResponseDto>, ChatUpdateResponseDto>(_chatService.EditChat(model, id));
         
@@ -61,7 +68,9 @@ namespace Message.API.Controllers
         /// <param name="id"></param>
         /// <returns>ChatEntity model</returns>
         [HttpGet("{id:Guid}")]
-        public async Task<ActionResult<ChatDto>> GetChatById(Guid id)
-            => await ReturnResult<ResultContainer<ChatDto>, ChatDto>(_chatService.GetChatById(id));
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<ActionResult<ChatResponseDto>> GetChatById(Guid id)
+            => await ReturnResult<ResultContainer<ChatResponseDto>, ChatResponseDto>(_chatService.GetChatById(id));
     }
 }

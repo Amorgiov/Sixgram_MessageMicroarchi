@@ -57,6 +57,24 @@ namespace Message.Core.Services.File
                 return null;
             }
         }
+
+        public async Task<string> SendGetRequest(Guid fileId)
+        {
+            using var client = _httpClientFactory.CreateClient("FileStorage");
+            client.DefaultRequestHeaders.Authorization =
+                new AuthenticationHeaderValue("Bearer", await _httpContext.GetTokenAsync("access_token"));
+            
+            try
+            {
+                var responseMessage = await client.GetAsync($"uploadfile/{fileId}");
+                var result = await responseMessage.Content.ReadAsStringAsync();
+                return result;
+            }
+            catch (HttpRequestException)
+            {
+                return null;
+            }
+        }
         
         public async Task<HttpStatusCode?> SendDeleteRequest(Guid fileId)
         {

@@ -9,6 +9,7 @@ namespace Message.Core.Services.Hubs
     public class ChatHub : Hub<IChatClient>
     {
         private string UserName => Context?.User?.Identity?.Name ?? "Unknown";
+        
         public override async Task OnDisconnectedAsync(Exception? exception)
         {
             await base.OnDisconnectedAsync(exception);

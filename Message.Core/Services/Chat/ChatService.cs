@@ -12,6 +12,7 @@ using Message.Core.Dto.Update;
 using Message.Core.Services.Token;
 using Message.Database.Models;
 using Message.Database.Repository.Chat;
+using Message.Database.Repository.Member;
 
 namespace Message.Core.Services.Chat
 {
@@ -19,36 +20,68 @@ namespace Message.Core.Services.Chat
     {
         private readonly IMapper _mapper;
         private readonly IChatRepository _chatRepository;
+        private readonly IMemberRepository _memberRepository;
         private readonly ITokenService _tokenService;
 
-        public ChatService(IMapper mapper, IChatRepository chatRepository, ITokenService tokenService)
+
+        public ChatService(IMapper mapper, IChatRepository chatRepository, ITokenService tokenService,
+            IMemberRepository memberRepository)
         {
             _mapper = mapper;
             _chatRepository = chatRepository;
             _tokenService = tokenService;
+            _memberRepository = memberRepository;
         }
 
-        public async Task<ResultContainer<ChatDto>> CreateChat(ChatEntity model)
+        public async Task<ResultContainer<ChatResponseDto>> CreateChat(ChatRequestDto model)
         {
+            var result = new ResultContainer<ChatResponseDto>();
+
             var currentUser = _tokenService.GetCurrentUserId();
-            model.Admin = currentUser;
-            return _mapper.Map<ResultContainer<ChatDto>>(await _chatRepository.Create(model));
+
+            if (currentUser == null)
+            {
+                result.ResponseStatusCode = ResponseStatusCode.Unauthorized;
+                return result;
+            }
+
+            var chat = new ChatEntity()
+            {
+                Id = Guid.NewGuid(),
+                Title = model.Title,
+                Admin = currentUser,
+            };
+
+            var member = new MemberEntity()
+            {
+                UserId = (Guid) currentUser,
+                ChatId = chat.Id
+            };
+
+            await _chatRepository.Create(chat);
+            await _memberRepository.Create(member);
+            
+            result = _mapper.Map<ResultContainer<ChatResponseDto>>(chat);
+            result.ResponseStatusCode = ResponseStatusCode.Ok;
+            
+            return result;
         }
 
-        public async Task<ResultContainer<ChatUpdateResponseDto>> DeleteChat(Guid id)
+        public async Task<ResultContainer> DeleteChat(Guid id)
         {
-            var result = new ResultContainer<ChatUpdateResponseDto>();
-            var chat = _chatRepository.GetById(id);
-            
+            var result = new ResultContainer();
+            var chat = await _chatRepository.GetById(id);
+
             if (chat == null)
             {
                 result.ResponseStatusCode = ResponseStatusCode.NotFound;
                 return result;
             }
+
+            await _chatRepository.Delete(chat);
+
+            result.ResponseStatusCode = ResponseStatusCode.NoContent;
             
-            await _chatRepository.Delete(await chat);
-            
-            result = _mapper.Map<ResultContainer<ChatUpdateResponseDto>>(chat);
             return result;
         }
 
@@ -57,7 +90,7 @@ namespace Message.Core.Services.Chat
             var result = new ResultContainer<ChatUpdateResponseDto>();
 
             //var user = _tokenService.GetCurrentUserId();
-            var chat = _chatRepository.GetById(id);
+            var chat = await _chatRepository.GetById(id);
 
             if (chat == null)
             {
@@ -65,21 +98,28 @@ namespace Message.Core.Services.Chat
                 return result;
             }
 
-            chat.Result.Title = data.NewTitle;
-            chat.Result.Members = data.NewMembers;
+            chat.Title = data.NewTitle;
+            /*chat.Result.Members = data.NewMembers;*/
 
-            result = _mapper.Map<ResultContainer<ChatUpdateResponseDto>>(await _chatRepository.Update(chat.Result));
+            result = _mapper.Map<ResultContainer<ChatUpdateResponseDto>>(await _chatRepository.Update(chat));
+
+            result.ResponseStatusCode = ResponseStatusCode.Ok;
             return result;
         }
 
-        public async Task<ResultContainer<ChatDto>> GetChatById(Guid id)
+        public async Task<ResultContainer<ChatResponseDto>> GetChatById(Guid id)
         {
-            var result = new ResultContainer<ChatDto>();
+            var result = new ResultContainer<ChatResponseDto>();
             var chat = await _chatRepository.GetById(id);
+            
             if (chat == null)
             {
                 result.ResponseStatusCode = ResponseStatusCode.NotFound;
             }
+
+            result = _mapper.Map<ResultContainer<ChatResponseDto>>(chat);
+            
+            result.ResponseStatusCode = ResponseStatusCode.Ok;
 
             return result;
         }
